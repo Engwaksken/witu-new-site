@@ -65,7 +65,10 @@ button, input, select, textarea { font: inherit; }
 .witu-slider-dots, .witu-t-dots { gap: 0; }
 .witu-t-nav { width: 44px; height: 44px; background: var(--action-color); }
 .witu-hero-progress { display: none; }
-.footer-col a:hover, .footer-col a:focus-visible { text-decoration: underline; text-underline-offset: 4px; }
+/* Keep public links free of underlines in every interaction state. */
+body a, body a:hover, body a:focus, body a:active, body a:visited {
+  text-decoration: none !important;
+}
 .footer-col, .witu-program-body { min-width: 0; overflow-wrap: anywhere; }
 .site-main { overflow-wrap: break-word; }
 .site-main :where(input:not([type="hidden"]):not([type="image"]), select, textarea) { max-width: 100%; min-height: 44px; }
