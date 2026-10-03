@@ -8,7 +8,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         if (target) {
             e.preventDefault();
             target.scrollIntoView({
-                behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+                behavior: (document.body.classList.contains('a11y-motion') || window.matchMedia('(prefers-reduced-motion: reduce)').matches) ? 'auto' : 'smooth',
                 block: 'start'
             });
             if (target.id === 'main-content') target.focus({ preventScroll: true });
@@ -174,7 +174,7 @@ window.addEventListener('scroll', function() {
 backToTopButton.addEventListener('click', function() {
     window.scrollTo({
         top: 0,
-        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
+        behavior: (document.body.classList.contains('a11y-motion') || window.matchMedia('(prefers-reduced-motion: reduce)').matches) ? 'auto' : 'smooth'
     });
 });
 

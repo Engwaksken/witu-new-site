@@ -90,6 +90,7 @@ function isActiveContains(string $needle, string $path): string {
 
   <?= $additional_head; ?>
   <link rel="stylesheet" href="assets/css/frontend-refinements.css">
+  <link rel="stylesheet" href="assets/css/accessibility.css">
 </head>
 
 <body class="<?= htmlspecialchars($body_class) ?>">
