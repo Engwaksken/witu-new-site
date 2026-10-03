@@ -1,0 +1,28 @@
+# Local credentials and environment
+/config/db.php
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Installed dependencies
+/vendor/
+/node_modules/
+
+# Runtime and server files
+/uploads/
+/logs/
+/cache/
+*.log
+error_log
+/.well-known/acme-challenge/
+/cgi-bin/
+
+# Database exports and local tooling
+*.sql
+*.sql.gz
+/.codex/
+/.agents/
+.DS_Store
+Thumbs.db
