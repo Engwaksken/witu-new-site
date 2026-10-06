@@ -179,11 +179,11 @@ body { font-family: var(--ff); color: var(--dark); background: #fff; -webkit-fon
 
 .ld-layout {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: 48px;
 }
 @media (min-width: 740px) {
-  .ld-layout.has-sidebar { grid-template-columns: 1fr 280px; align-items: start; }
+  .ld-layout.has-sidebar { grid-template-columns: minmax(0, 1fr) 280px; align-items: start; }
 }
 
 /* -- Content -- */
