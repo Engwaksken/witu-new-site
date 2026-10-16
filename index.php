@@ -3255,19 +3255,23 @@ document.addEventListener(
             }
 
 
-            const slideWidth =
-                slides[0]
-                    .getBoundingClientRect()
-                    .width;
+            /*
+             * Slide width as a share of the track, so the shift stays
+             * correct when large screens scale the page with CSS zoom.
+             */
+            const slideShare =
+                slides[0].getBoundingClientRect().width /
+                (track.getBoundingClientRect().width || 1);
 
 
             track.style.transform =
                 'translateX(-' +
                 (
                     index *
-                    slideWidth
+                    slideShare *
+                    100
                 ) +
-                'px)';
+                '%)';
 
 
             if (dotsWrap) {

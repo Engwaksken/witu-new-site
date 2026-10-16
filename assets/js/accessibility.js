@@ -38,8 +38,10 @@
   panel.addEventListener('change', event => { const k = event.target.dataset.setting; if (!k) return; settings[k] = k === 'size' ? Number(event.target.value) : event.target.type === 'checkbox' ? event.target.checked : event.target.value; apply(); status('Settings updated.'); });
   panel.querySelector('[data-reset]').addEventListener('click', () => { settings = {...defaults}; if ('speechSynthesis' in window) speechSynthesis.cancel(); apply(); status('Settings reset.'); });
   panel.querySelector('[data-main]').addEventListener('click', () => { panel.close(); const main = document.getElementById('main-content'); if (main) { main.focus(); main.scrollIntoView({behavior:'auto'}); } });
-  document.addEventListener('pointermove', e => { if (settings.guide) guide.style.top = `${e.clientY + 18}px`; }, {passive:true});
-  document.addEventListener('focusin', e => { if (settings.guide && !panel.contains(e.target)) guide.style.top = `${Math.min(innerHeight - 8, e.target.getBoundingClientRect().bottom + 8)}px`; });
+  // Large screens scale the page with CSS zoom; viewport coordinates are unscaled, so divide it back out.
+  const zoom = () => parseFloat(getComputedStyle(document.documentElement).zoom) || 1;
+  document.addEventListener('pointermove', e => { if (settings.guide) guide.style.top = `${(e.clientY + 18) / zoom()}px`; }, {passive:true});
+  document.addEventListener('focusin', e => { if (settings.guide && !panel.contains(e.target)) guide.style.top = `${Math.min(innerHeight - 8, e.target.getBoundingClientRect().bottom + 8) / zoom()}px`; });
   const read = panel.querySelector('[data-read]'); const stop = panel.querySelector('[data-stop]');
   if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) { read.disabled = stop.disabled = true; panel.querySelector('[data-pause]').disabled = panel.querySelector('[data-resume]').disabled = true; status('Read aloud is unavailable in this browser.'); }
   else {
