@@ -75,12 +75,22 @@ body a, body a:hover, body a:focus, body a:active, body a:visited {
 .site-main textarea { resize: vertical; }
 .lrn-filters-inner { flex-wrap: wrap; }
 .article-content-column { min-width: 0; }
-.article-body :where(img, video, iframe) { max-width: 100%; }
-.article-body pre { max-width: 100%; overflow-x: auto; }
+/* CMS rich text (articles, pages, programmes, focus areas, courses): keep
+   embedded media, code, long URLs and wide tables inside the column. */
+:is(.article-body, .page-article, .pd-content, .fad-content, .ld-content) { min-width: 0; overflow-wrap: break-word; }
+:is(.article-body, .page-article, .pd-content, .fad-content, .ld-content) :where(img, video, iframe, embed, object) { max-width: 100%; }
+:is(.article-body, .page-article, .pd-content, .fad-content, .ld-content) :where(img, video) { height: auto; }
+:is(.article-body, .page-article, .pd-content, .fad-content, .ld-content) pre { max-width: 100%; overflow-x: auto; }
 @media (max-width: 968px) {
   .logo { max-width: calc(100% - 70px); }
-  .nav-menu { width: min(360px, 100vw); height: 100dvh; flex-wrap: nowrap; justify-content: flex-start; visibility: hidden; }
-  .nav-menu.active { visibility: visible; }
+  /* Closed drawer is removed from layout: parked off-canvas at right:-100% it
+     widened the page, so phones zoomed every page out to roughly half size. */
+  .nav-menu { right: 0; width: min(360px, 100vw); height: 100dvh; flex-wrap: nowrap; justify-content: flex-start; display: none; }
+  .nav-menu.active { display: flex; animation: navDrawerIn .3s ease; }
+  /* Long CMS page titles wrap in the drawer; bottom room clears the fixed Accessibility launcher. */
+  .nav-menu { padding-bottom: 88px; }
+  .nav-menu > li > a, .nav-menu > li > button { white-space: normal; text-align: left; }
+  body:has(.nav-menu.active) .a11y-launcher { visibility: hidden; }
   .nav-menu .dropdown-menu { display: none; }
   .nav-menu .dropdown.active .dropdown-menu { display: block; }
 }
@@ -91,12 +101,38 @@ body a, body a:hover, body a:focus, body a:active, body a:visited {
   .witu-slider-dots { bottom: 20px; max-width: calc(100% - 136px); flex-wrap: wrap; }
   .witu-hero-btns { gap: 12px; flex-wrap: wrap; }
   .witu-impact-label { font-size: 14px; }
+  /* Wide CMS tables scroll inside themselves instead of widening the page. */
+  :is(.article-body, .page-article, .pd-content, .fad-content, .ld-content) table { display: block; max-width: 100%; overflow-x: auto; }
+  /* Leave room so the fixed Accessibility launcher never covers the last footer line. */
+  .site-footer { padding-bottom: 76px; }
+  /* Testimonial arrows sat on top of the quote text; move them beside the dots. */
+  .witu-t-nav { top: auto; bottom: 0; transform: none; }
+  .witu-t-nav:hover { transform: scale(1.06); }
+  .witu-t-prev { left: 0; }
+  .witu-t-next { right: 0; }
+  .witu-t-dots { min-height: 44px; margin-top: 8px; padding-inline: 52px; flex-wrap: wrap; }
+  /* Touch targets: footer lists and card/text links reach 44px on touch screens. */
+  .footer-col ul li { margin-bottom: 0; }
+  .footer-col ul a, .footer-links a { min-height: 44px; }
+  .footer-links { display: flex; flex-wrap: wrap; justify-content: center; column-gap: 16px; }
+  .footer-links a { display: inline-flex; align-items: center; }
+  .site-main :is(.witu-t-more, .lrn-chip, .bl-chip, .tag-link) { display: inline-flex; align-items: center; }
+  .site-main :is(.witu-t-more, .pg-card-cta, .pd-rel-link, .fal-card-cta, .fad-prog-link, .bl-read-more,
+    .fa-card-link, .prog-card-link, .lrn-btn, .lrn-chip, .bl-chip, .tag-link, .pd-back-link, .article-nav a) { min-height: 44px; }
+  /* Small uppercase labels stay legible on phones. */
+  .site-main :is(.ar-eyebrow, .ar-year-badge, .bl-eyebrow, .bl-cat-pill, .ct-hero-eyebrow, .fad-eyebrow,
+    .fal-eyebrow, .fal-kicker, .tm-eyebrow, .lrn-hero-eyebrow, .lrn-level-pill, .ld-hero-eyebrow,
+    .ld-level-badge, .ld-section-label, .ld-nav-dir, .nl-eyebrow, .nl-date-badge, .opp-eyebrow,
+    .opp-scroll-hint, .opp-section-kicker, .opp-card-num, .od-hero-kicker, .od-section-label, .od-nav-dir,
+    .imp-eyebrow, .imp-section-kicker, .imp-divider-label, .pg-eyebrow, .pg-card-num) { font-size: 12px; }
 }
 @media (max-width: 420px) {
   .witu-hero-btns .witu-btn { width: 100%; justify-content: center; }
   .footer-grid { grid-template-columns: 1fr; }
 }
+@keyframes navDrawerIn { from { transform: translateX(100%); } to { transform: none; } }
 @media (prefers-reduced-motion: reduce) {
+  .nav-menu.active { animation: none; }
   .fade-in { opacity: 1 !important; transform: none !important; }
   .witu-hero-slide { transform: none !important; }
 }

@@ -1,0 +1,89 @@
+/* ================================================================
+   WITU responsive layer: loaded last, after page styles.
+   Phones to 4K TVs. The base stylesheet is sized in px around a
+   1200px column, so large screens scale the whole page with
+   stepped `zoom` (keeping a ~1450-1900px composition at any size)
+   and widen the content column instead of leaving a narrow strip.
+================================================================ */
+
+:root { --gutter: clamp(16px, 3.5vw, 32px); --wrap: 1180px; }
+
+/* Safety net: nothing may widen the page sideways. `clip` (not
+   hidden) keeps the sticky header working. */
+html, body { overflow-x: clip; }
+:where(img, video, iframe, svg, canvas) { max-width: 100%; }
+
+/* Full-bleed hero: `100vw` includes the scrollbar and is inflated
+   by zoom, so it overflowed; the hero already sits outside any
+   container, so plain block width is full-bleed. */
+.witu-hero { width: auto; max-width: none; margin-inline: 0; }
+
+/* One gutter for every content column. Page <style> blocks re-declare
+   their wraps after the header, hence the `html body` weight. */
+html body :is(.container, .site-footer .container) {
+  max-width: calc(var(--wrap) + 2 * var(--gutter));
+  padding-inline: var(--gutter);
+}
+html body :is(.ar-wrap, .nl-wrap, .bl-wrap, .tm-wrap, .fa-wrap, .imp-wrap,
+  .opp-container, .lrn-container, .ct-container, .ld-container) {
+  width: min(var(--wrap), 100% - 2 * var(--gutter));
+}
+html body .od-container { width: min(900px, 100% - 2 * var(--gutter)); }
+html body :is(.witu-hero-inner) { max-width: calc(var(--wrap) + 2 * var(--gutter)); }
+
+/* ---------------- Laptops (969-1279): keep the nav on one line ---- */
+@media (min-width: 969px) and (max-width: 1279px) {
+  .header-content { gap: 12px; }
+  .logo img { height: 44px; }
+  .nav-menu { gap: 0; }
+  .nav-menu > li > a, .nav-menu > li > button { padding-inline: 9px; font-size: 13.5px; }
+  .nav-menu .support-cause-link { padding-inline: 14px !important; }
+}
+
+/* ---------------- Large desktops, 27" monitors and TVs ----------- */
+/* Wider column once there is room for it. */
+@media (min-width: 1440px) {
+  :root { --wrap: 1280px; }
+}
+/* Proportional scale-up. Media queries read the real viewport, so
+   each step's effective layout width stays between ~1450 and ~1900px. */
+@media (min-width: 1680px) { html { zoom: 1.1; } }
+@media (min-width: 1920px) { html { zoom: 1.2; } :root { --wrap: 1320px; } }
+@media (min-width: 2240px) { html { zoom: 1.3; } }
+@media (min-width: 2560px) { html { zoom: 1.4; } :root { --wrap: 1360px; } }
+@media (min-width: 3200px) { html { zoom: 1.75; } }
+@media (min-width: 3840px) { html { zoom: 2.1; } }
+@media (min-width: 5120px) { html { zoom: 2.8; } }
+
+/* ---------------- Short landscape screens (phones turned sideways,
+   1080p TVs reporting 960x540) --------------------------------- */
+@media (max-height: 560px) and (orientation: landscape) {
+  .site-header { position: relative; }
+  #main-content { scroll-margin-top: 0; }
+  .witu-hero-slider, .witu-hero-slide.active, .witu-hero-inner { min-height: max(420px, 100svh); }
+  .witu-hero-inner { padding-block: 32px 84px; }
+  .nav-menu { padding-top: 64px; }
+  .a11y-panel { max-height: calc(100dvh - 32px); inset: 16px auto auto 16px; }
+}
+
+/* Hero dots: `left: 50%` left the row only half the slider to lay out
+   in, so five 44px targets wrapped to two lines on phones. */
+@media (max-width: 768px) {
+  .witu-slider-dots { left: 0; right: 0; width: fit-content; margin-inline: auto; transform: none; flex-wrap: nowrap; }
+}
+@media (max-width: 400px) {
+  .witu-slider-dot, .witu-slider-dot.active { width: 36px; }
+}
+
+/* ---------------- Small phones ----------------------------------- */
+@media (max-width: 360px) {
+  .logo img { height: 40px; }
+  .witu-hero-text h1 { font-size: 28px; }
+  .witu-impact-grid { grid-template-columns: 1fr; }
+  .witu-cta-btns .witu-btn { width: 100%; }
+}
+
+/* Remote-control and keyboard users on TVs need an obvious focus ring. */
+@media (hover: none) and (min-width: 1280px) {
+  :where(a, button, input, select, textarea, [tabindex]):focus-visible { outline-width: 4px; }
+}
