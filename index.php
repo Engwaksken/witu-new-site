@@ -567,6 +567,13 @@ $overlay = max(
 );
 
 
+$heroOverlayStyle = sprintf(
+    'background:linear-gradient(90deg,rgba(0,0,0,%.2F),rgba(45,14,48,%.2F))',
+    min(0.84, $overlay + 0.18),
+    max(0.18, $overlay - 0.08)
+);
+
+
 $halign =
     $home['hero_text_align'] ??
     'center';
@@ -1359,12 +1366,32 @@ include 'header.php';
 
                 <div
                     class="witu-hero-slide <?php echo $i === 0 ? 'active' : ''; ?> <?php echo $background === '' ? 'is-fallback' : 'has-image'; ?>"
-                    data-bg-image="<?php echo h($background); ?>"
                 >
+
+                    <?php
+                    /*
+                     * The first slide is the page's largest paint, so it is a
+                     * real high-priority image in the HTML. Later slides keep
+                     * their sources in data-* until the page has loaded.
+                     */
+                    if ($background !== '') {
+                        $heroImg = responsiveImg(
+                            $background,
+                            '',
+                            $i === 0
+                                ? ['class' => 'witu-hero-media', 'loading' => 'eager', 'fetchpriority' => 'high', 'decoding' => null]
+                                : ['class' => 'witu-hero-media', 'loading' => null]
+                        );
+
+                        echo $i === 0
+                            ? $heroImg
+                            : preg_replace('/ (src|srcset|sizes)="/', ' data-$1="', $heroImg);
+                    }
+                    ?>
 
                     <div
                         class="witu-hero-overlay"
-                        data-overlay-opacity="<?php echo h($overlay); ?>"
+                        style="<?php echo h($heroOverlayStyle); ?>"
                     ></div>
 
 
@@ -1507,12 +1534,11 @@ include 'header.php';
 
             <div
                 class="witu-hero-slide active is-fallback"
-                data-bg-image=""
             >
 
                 <div
                     class="witu-hero-overlay"
-                    data-overlay-opacity="<?php echo h($overlay); ?>"
+                    style="<?php echo h($heroOverlayStyle); ?>"
                 ></div>
 
 
@@ -1936,12 +1962,15 @@ include 'header.php';
                             aria-label="Learn more about <?php echo h($programTitle); ?>"
                         >
 
-                            <img
-                                class="witu-program-img"
-                                src="<?php echo h($programImageUrl); ?>"
-                                alt="<?php echo h($programTitle); ?>"
-                                loading="lazy"
-                            >
+                            <?php
+                            echo responsiveImg(
+                                $programImageUrl,
+                                $programTitle,
+                                ['class' => 'witu-program-img'],
+                                [400, 800, 1200],
+                                '(max-width: 640px) 100vw, (max-width: 1100px) 50vw, 400px'
+                            );
+                            ?>
 
                         </a>
 
@@ -2121,7 +2150,8 @@ $journeyHasVisual =
     id="participant-journey"
     data-bg-type="<?php echo h($journeySectionSettings['bg_type'] ?? 'color'); ?>"
     data-bg-color="<?php echo h($journeySectionSettings['bg_color'] ?? '#ffffff'); ?>"
-    data-bg-image="<?php echo h(assetUrl($journeySectionSettings['bg_image'] ?? '')); ?>"
+    data-bg-image="<?php echo h(imgVariant(assetUrl($journeySectionSettings['bg_image'] ?? ''), 1920)); ?>"
+    data-bg-image-sm="<?php echo h(imgVariant(assetUrl($journeySectionSettings['bg_image'] ?? ''), 800)); ?>"
     data-overlay-color="<?php echo h($journeySectionSettings['overlay_color'] ?? 'rgba(11,44,58,.55)'); ?>"
 >
 
@@ -2524,12 +2554,15 @@ $journeyHasVisual =
                                         ):
                                         ?>
 
-                                            <img
-                                                class="witu-t-photo"
-                                                src="uploads/testimonials/<?php echo h($testimonial['photo']); ?>"
-                                                alt="<?php echo h($testimonial['full_name']); ?>"
-                                                loading="lazy"
-                                            >
+                                            <?php
+                                            echo responsiveImg(
+                                                'uploads/testimonials/' . $testimonial['photo'],
+                                                (string)$testimonial['full_name'],
+                                                ['class' => 'witu-t-photo'],
+                                                [96, 192],
+                                                '48px'
+                                            );
+                                            ?>
 
                                         <?php else: ?>
 
@@ -2691,7 +2724,8 @@ $partnerHasVisual =
     id="partners"
     data-bg-type="<?php echo h($partnerSectionSettings['bg_type'] ?? 'color'); ?>"
     data-bg-color="<?php echo h($partnerSectionSettings['bg_color'] ?? '#ffffff'); ?>"
-    data-bg-image="<?php echo h(assetUrl($partnerSectionSettings['bg_image'] ?? '')); ?>"
+    data-bg-image="<?php echo h(imgVariant(assetUrl($partnerSectionSettings['bg_image'] ?? ''), 1920)); ?>"
+    data-bg-image-sm="<?php echo h(imgVariant(assetUrl($partnerSectionSettings['bg_image'] ?? ''), 800)); ?>"
     data-overlay-color="<?php echo h($partnerSectionSettings['overlay_color'] ?? 'rgba(11,44,58,.55)'); ?>"
 >
 
@@ -2801,11 +2835,15 @@ $partnerHasVisual =
                         ):
                         ?>
 
-                            <img
-                                src="<?php echo h($partnerLogo); ?>"
-                                alt="<?php echo h($partner['name']); ?>"
-                                loading="lazy"
-                            >
+                            <?php
+                            echo responsiveImg(
+                                $partnerLogo,
+                                (string)$partner['name'],
+                                [],
+                                [192, 400],
+                                '180px'
+                            );
+                            ?>
 
                         <?php else: ?>
 
@@ -2988,26 +3026,14 @@ $partnerHasVisual =
     let timer = null;
     let pointerStartX = null;
 
-    function applyBackgrounds() {
-        slides.forEach(function (slide) {
-            const image = (slide.dataset.bgImage || '').trim();
-            const overlay = slide.querySelector('.witu-hero-overlay');
-            const opacity = overlay
-                ? Math.max(0, Math.min(.9, Number.parseFloat(overlay.dataset.overlayOpacity || '.48')))
-                : .48;
-
-            slide.style.backgroundImage = image
-                ? 'url("' + image.replace(/"/g, '\\"') + '")'
-                : 'linear-gradient(135deg,#0b1b3a 0%,#1a3a6e 52%,#6f3f74 100%)';
-
-            if (overlay) {
-                overlay.style.background =
-                    'linear-gradient(90deg,rgba(0,0,0,' +
-                    Math.min(.84, opacity + .18) +
-                    '),rgba(45,14,48,' +
-                    Math.max(.18, opacity - .08) +
-                    '))';
+    function loadDeferredSlides() {
+        slider.querySelectorAll('img[data-src]').forEach(function (img) {
+            if (img.dataset.srcset) {
+                img.sizes = img.dataset.sizes || '100vw';
+                img.srcset = img.dataset.srcset;
             }
+            img.src = img.dataset.src;
+            img.removeAttribute('data-src');
         });
     }
 
@@ -3019,6 +3045,7 @@ $partnerHasVisual =
     }
 
     function showSlide(nextIndex, direction) {
+        if (direction) loadDeferredSlides();
         const previousIndex = index;
         index = (nextIndex + slides.length) % slides.length;
 
@@ -3109,9 +3136,14 @@ $partnerHasVisual =
         document.hidden ? stopSlider() : startSlider();
     });
 
-    applyBackgrounds();
     showSlide(0);
     startSlider();
+
+    if (document.readyState === 'complete') {
+        loadDeferredSlides();
+    } else {
+        window.addEventListener('load', loadDeferredSlides, {once: true});
+    }
 })();
 </script>
 
@@ -3531,6 +3563,23 @@ document.addEventListener(
 (function () {
     'use strict';
 
+    const smallScreen = window.innerWidth * (window.devicePixelRatio || 1) <= 900;
+
+    function paintBackground(section) {
+        const image = ((smallScreen && section.dataset.bgImageSm) || section.dataset.bgImage || '').trim();
+        section.style.backgroundImage = 'url("' + image.replace(/"/g, '\\"') + '")';
+    }
+
+    const backgroundObserver = 'IntersectionObserver' in window
+        ? new IntersectionObserver(function (entries, instance) {
+            entries.forEach(function (entry) {
+                if (!entry.isIntersecting) return;
+                paintBackground(entry.target);
+                instance.unobserve(entry.target);
+            });
+        }, {rootMargin: '600px 0px'})
+        : null;
+
     document.querySelectorAll('.section-bg-dynamic').forEach(function (section) {
         const type = (section.dataset.bgType || 'color').toLowerCase();
         const colour = (section.dataset.bgColor || '#ffffff').trim();
@@ -3541,7 +3590,7 @@ document.addEventListener(
         section.style.setProperty('--section-overlay', overlay);
 
         if (type === 'image' && image !== '') {
-            section.style.backgroundImage = 'url("' + image.replace(/"/g, '\\"') + '")';
+            backgroundObserver ? backgroundObserver.observe(section) : paintBackground(section);
         } else {
             section.style.backgroundImage = 'none';
         }

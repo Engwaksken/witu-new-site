@@ -15,6 +15,16 @@ PHP and MySQL website for Women in Technology Uganda, including public programme
 
 Run PHP syntax checks for modified PHP files and `node --check assets/js/site.js` for the shared JavaScript. Full visual and form testing requires a working database and uploaded content.
 
+## Images and performance
+
+Pages serve resized WebP copies of uploaded images from `uploads/_resized/` (see `core/image.php`). A missing copy is built in the background after the page that needs it has been sent, so the first visitor gets the original file. After deploying, or after uploading many images, build them all at once:
+
+```
+php tools/warm-images.php
+```
+
+The script can be re-run safely, including from cron. Local CSS and JS links carry a `?v=<modified time>` version because `.htaccess` caches them as immutable.
+
 ## Frontend audit
 
 See [FRONTEND-AUDIT.md](FRONTEND-AUDIT.md) for implemented design, usability and accessibility improvements and remaining live verification.

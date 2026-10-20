@@ -1,0 +1,9 @@
+# Admin pages hold private data: never store them in any cache, including
+# the back/forward cache.
+<IfModule mod_headers.c>
+<FilesMatch "\.php$">
+Header set Cache-Control "private, no-cache, no-store, must-revalidate"
+Header set Pragma "no-cache"
+Header set Expires "0"
+</FilesMatch>
+</IfModule>

@@ -154,8 +154,8 @@
     </div>
 </footer>
 
-<script src="assets/js/site.js"></script>
-<script src="assets/js/accessibility.js"></script>
+<script src="<?= htmlspecialchars(versionedAsset('assets/js/site.js')) ?>"></script>
+<script src="<?= htmlspecialchars(versionedAsset('assets/js/accessibility.js')) ?>"></script>
 
 <?php if (isset($additional_scripts)): ?>
     <?php echo $additional_scripts; ?>

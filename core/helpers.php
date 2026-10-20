@@ -26,6 +26,18 @@ if (!defined('UPLOAD_PATH')) {
     define('UPLOAD_PATH', dirname(__DIR__) . '/uploads/');
 }
 
+require_once __DIR__ . '/image.php';
+
+/**
+ * Local CSS/JS URL with a modification-time version. .htaccess caches these
+ * files as immutable for a year, so the version is what delivers edits.
+ */
+function versionedAsset(string $path): string {
+    $file = dirname(__DIR__) . '/' . ltrim($path, '/');
+
+    return is_file($file) ? $path . '?v=' . filemtime($file) : $path;
+}
+
 
 function formatDate($date, $format = 'M d, Y') {
     if (empty($date) || $date === '0000-00-00') {
