@@ -1,4 +1,5 @@
-/* Shows the admin-managed site popup rendered by core/popup.php. */
+/* Shows the admin-managed site popup rendered by core/popup.php. It is a
+   non-blocking corner card: no scroll lock and no focus trap. */
 (function () {
   var popup = document.getElementById('sitePopup');
   if (!popup) return;
@@ -32,38 +33,28 @@
 
   if (alreadySeen()) return;
 
-  var lastFocus = null;
-
   function open() {
-    lastFocus = document.activeElement;
     popup.hidden = false;
-    document.body.classList.add('site-popup-open');
     markSeen();
-    var close = popup.querySelector('.site-popup__close');
-    if (close) close.focus();
   }
 
   function close() {
+    var hadFocus = popup.contains(document.activeElement);
     popup.hidden = true;
-    document.body.classList.remove('site-popup-open');
-    if (lastFocus && lastFocus.focus) lastFocus.focus();
+    // Don't strand keyboard users on a hidden element.
+    if (hadFocus && document.body.focus) {
+      document.body.setAttribute('tabindex', '-1');
+      document.body.focus({ preventScroll: true });
+      document.body.removeAttribute('tabindex');
+    }
   }
 
   popup.addEventListener('click', function (e) {
-    if (e.target.closest('[data-popup-close]')) close();
-    else if (e.target.closest('[data-popup-cta]')) close();
+    if (e.target.closest('[data-popup-close], [data-popup-cta]')) close();
   });
 
   document.addEventListener('keydown', function (e) {
-    if (popup.hidden) return;
-    if (e.key === 'Escape') { close(); return; }
-    if (e.key !== 'Tab') return;
-    // Keep keyboard focus inside the dialog while it is open.
-    var items = popup.querySelectorAll('a[href], button');
-    if (!items.length) return;
-    var first = items[0], last = items[items.length - 1];
-    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    if (!popup.hidden && e.key === 'Escape') close();
   });
 
   setTimeout(open, delay * 1000);

@@ -111,11 +111,10 @@ function renderSitePopup(mysqli $conn, string $page_file): void
     ?>
 <link rel="stylesheet" href="<?= htmlspecialchars(versionedAsset('assets/css/popup.css')) ?>">
 <div class="site-popup" id="sitePopup" hidden
-     role="dialog" aria-modal="true" aria-labelledby="sitePopupTitle"
+     role="dialog" aria-modal="false" aria-labelledby="sitePopupTitle"
      data-popup-version="<?= htmlspecialchars($version) ?>"
      data-popup-frequency="<?= htmlspecialchars($frequency) ?>"
      data-popup-delay="<?= max(0, (int)$popup['delay_seconds']) ?>">
-    <div class="site-popup__backdrop" data-popup-close></div>
     <div class="site-popup__dialog<?= $image ? ' site-popup__dialog--image' : '' ?>">
         <button type="button" class="site-popup__close" data-popup-close aria-label="Close">
             <i class="fas fa-times" aria-hidden="true"></i>
