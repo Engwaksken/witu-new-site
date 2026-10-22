@@ -156,7 +156,7 @@
 
 <?php
 require_once __DIR__ . '/core/popup.php';
-renderSitePopup($conn, $current_file ?? basename($_SERVER['PHP_SELF'] ?? ''));
+renderSitePopup($conn, basename($_SERVER['SCRIPT_NAME'] ?? ''));
 ?>
 
 <script src="<?= htmlspecialchars(versionedAsset('assets/js/site.js')) ?>"></script>

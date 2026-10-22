@@ -775,14 +775,6 @@ body {
     object-fit: contain;
 }
 
-.admin-brand-name {
-    font-size: 18px;
-    font-weight: 700;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
 .header-left {
     min-width: 0;
 }
@@ -1084,10 +1076,6 @@ body {
     .admin-brand img {
         height: 32px;
         max-width: 110px;
-    }
-
-    .admin-brand-name {
-        display: none;
     }
 
     .header-right {

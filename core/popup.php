@@ -72,14 +72,24 @@ function getActivePopup(mysqli $conn, string $page_file): ?array
 {
     ensurePopupTable($conn);
 
-    $res = $conn->query("SELECT * FROM site_popups
+    // Compare against PHP's clock (Africa/Kampala), the same clock the admin
+    // schedule is entered in; MySQL NOW() can be in a different timezone.
+    $now = date('Y-m-d H:i:s');
+    $st = $conn->prepare("SELECT * FROM site_popups
         WHERE is_active = 1
-          AND (start_at IS NULL OR start_at <= NOW())
-          AND (end_at IS NULL OR end_at >= NOW())
+          AND (start_at IS NULL OR start_at <= ?)
+          AND (end_at IS NULL OR end_at >= ?)
         ORDER BY priority DESC, updated_at DESC");
+    if (!$st) return null;
+    $st->bind_param("ss", $now, $now);
+    $st->execute();
+    $res = $st->get_result();
     if (!$res) return null;
 
-    $page_file = $page_file === '' ? 'index.php' : $page_file;
+    // Clean URLs (/about-us) reach here without the .php the page list uses.
+    $page_file = basename(strtolower(trim($page_file)));
+    if ($page_file === '') $page_file = 'index.php';
+    if (substr($page_file, -4) !== '.php') $page_file .= '.php';
     while ($row = $res->fetch_assoc()) {
         $pages = array_filter(array_map('trim', explode(',', (string)$row['pages'])));
         if (!$pages || in_array($page_file, $pages, true)) {
@@ -101,11 +111,10 @@ function renderSitePopup(mysqli $conn, string $page_file): void
     ?>
 <link rel="stylesheet" href="<?= htmlspecialchars(versionedAsset('assets/css/popup.css')) ?>">
 <div class="site-popup" id="sitePopup" hidden
-     role="dialog" aria-modal="true" aria-labelledby="sitePopupTitle"
+     role="dialog" aria-modal="false" aria-labelledby="sitePopupTitle"
      data-popup-version="<?= htmlspecialchars($version) ?>"
      data-popup-frequency="<?= htmlspecialchars($frequency) ?>"
      data-popup-delay="<?= max(0, (int)$popup['delay_seconds']) ?>">
-    <div class="site-popup__backdrop" data-popup-close></div>
     <div class="site-popup__dialog<?= $image ? ' site-popup__dialog--image' : '' ?>">
         <button type="button" class="site-popup__close" data-popup-close aria-label="Close">
             <i class="fas fa-times" aria-hidden="true"></i>

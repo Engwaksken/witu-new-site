@@ -198,7 +198,7 @@ include 'layout/sidebar.php';
 <?php endif; ?>
 
 <p style="color:#6b7280;font-size:14px;margin-bottom:20px;">
-    Popups appear as a modal on the public website. When several popups are live on the same page,
+    Popups appear as a card in the bottom corner of the public website, without blocking scrolling. When several popups are live on the same page,
     visitors see the one with the highest priority.
 </p>
 
@@ -304,7 +304,7 @@ include 'layout/sidebar.php';
                     <label><i class="fas fa-image" style="color:#f86505;"></i> Image (optional)</label>
                     <input type="file" name="image" id="ppImage" accept="image/jpeg,image/png,image/gif,image/webp"
                            onchange="previewPopupImage(this)">
-                    <small>Shown beside the message on desktop and above it on phones. Portrait or square works best.</small>
+                    <small>Shown across the top of the popup card. Landscape images work best.</small>
                 </div>
                 <div id="ppPreviewWrap" style="display:none;margin-bottom:16px;">
                     <img id="ppPreviewImg" src="" alt=""

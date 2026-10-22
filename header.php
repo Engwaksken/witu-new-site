@@ -112,17 +112,8 @@ function isActiveContains(string $needle, string $path): string {
     <div class="header-content">
 
       <a href="index.php" class="logo" aria-label="<?= htmlspecialchars($site_name ?: 'WITU', ENT_QUOTES) ?> home">
-        <?php if (!empty($site_logo)): ?>
-          <?php $logo_dims = imgDimensions($site_logo); ?>
-          <img src="<?= htmlspecialchars($site_logo) ?>" alt="<?= htmlspecialchars($site_name) ?>"<?php if ($logo_dims): ?> width="<?= $logo_dims[0] ?>" height="<?= $logo_dims[1] ?>"<?php endif; ?>>
-        <?php endif; ?>
-        <?php if (empty($site_logo)): ?><strong class="logo-name"><?= htmlspecialchars($site_name ?: 'WITU') ?></strong><?php endif; ?>
-
-        <div class="logo-text">
-          <?php if (!empty($site_tagline)): ?>
-            <p><?= htmlspecialchars($site_tagline) ?></p>
-          <?php endif; ?>
-        </div>
+        <?php $logo_src = siteLogoUrl($conn); $logo_dims = imgDimensions($logo_src); ?>
+        <img src="<?= htmlspecialchars($logo_src) ?>" alt="<?= htmlspecialchars($site_name ?: 'WITU') ?>"<?php if ($logo_dims): ?> width="<?= $logo_dims[0] ?>" height="<?= $logo_dims[1] ?>"<?php endif; ?>>
       </a>
 
       <nav class="main-nav" aria-label="Primary Navigation">
