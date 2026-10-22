@@ -36,11 +36,9 @@ $admin_favicon   = $admin_favicon === '' ? '../assets/img/favicon.png'
                 <button type="button" class="sidebar-toggle" aria-label="Toggle menu" aria-controls="sidebar" aria-expanded="false">
                     <i class="fas fa-bars"></i>
                 </button>
-                <a href="dashboard.php" class="admin-brand">
+                <a href="dashboard.php" class="admin-brand" aria-label="<?php echo htmlspecialchars($admin_site_name); ?> dashboard">
                     <img src="<?php echo htmlspecialchars(siteLogoUrl($conn, '../')); ?>"
-                         alt="<?php echo htmlspecialchars($admin_site_name); ?>"
-                         onerror="this.remove()">
-                    <span class="admin-brand-name"><?php echo htmlspecialchars($admin_site_name); ?></span>
+                         alt="<?php echo htmlspecialchars($admin_site_name); ?>">
                 </a>
             </div>
             <div class="header-right">

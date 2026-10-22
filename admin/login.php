@@ -37,8 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="login-box">
             <div class="login-header">
                 <img class="login-logo" src="<?php echo htmlspecialchars(siteLogoUrl($conn, '../')); ?>"
-                     alt="<?php echo htmlspecialchars($login_site_name); ?>" onerror="this.remove()">
-                <h1><?php echo htmlspecialchars($login_site_name); ?></h1>
+                     alt="<?php echo htmlspecialchars($login_site_name); ?>">
                 <p>Login into Your account</p>
             </div>
             
