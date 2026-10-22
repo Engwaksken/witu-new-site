@@ -154,6 +154,11 @@
     </div>
 </footer>
 
+<?php
+require_once __DIR__ . '/core/popup.php';
+renderSitePopup($conn, $current_file ?? basename($_SERVER['PHP_SELF'] ?? ''));
+?>
+
 <script src="<?= htmlspecialchars(versionedAsset('assets/js/site.js')) ?>"></script>
 <script src="<?= htmlspecialchars(versionedAsset('assets/js/accessibility.js')) ?>"></script>
 

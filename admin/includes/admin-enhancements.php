@@ -147,6 +147,7 @@ if (!function_exists('adminStatsForCurrentPage')) {
             'hire-talent.php' => ['hire_talent_submissions', 'Talent Requests', 'fa-user-tie'],
             'partner.php' => ['partner_submissions', 'Partner Requests', 'fa-people-arrows'],
             'newsletters.php' => ['newsletters', 'Newsletters', 'fa-envelope-open-text'],
+            'popups.php' => ['site_popups', 'Popups', 'fa-window-restore'],
         ];
         if (!isset($map[$page])) return [];
         [$table, $label, $icon] = $map[$page];
