@@ -38,6 +38,21 @@ function versionedAsset(string $path): string {
     return is_file($file) ? $path . '?v=' . filemtime($file) : $path;
 }
 
+/**
+ * Site logo URL from settings, falling back to the bundled logo. $prefix lets
+ * pages below the site root (e.g. admin/ passes '../') resolve relative paths.
+ */
+function siteLogoUrl($conn, string $prefix = ''): string {
+    $logo = trim((string)getSetting($conn, 'site_logo', ''));
+    if ($logo === '') {
+        $logo = 'assets/img/logo.png';
+    }
+    if (preg_match('#^(https?:)?//#i', $logo) || $logo[0] === '/') {
+        return $logo;
+    }
+    return $prefix . $logo;
+}
+
 
 function formatDate($date, $format = 'M d, Y') {
     if (empty($date) || $date === '0000-00-00') {

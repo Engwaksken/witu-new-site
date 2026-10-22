@@ -1,7 +1,7 @@
 </main>
     </div>
     
-    <script src="../assets/js/admin.js"></script>
+    <script src="../<?php echo htmlspecialchars(versionedAsset('assets/js/admin.js')); ?>"></script>
     <?php if (isset($extra_js)): ?>
         <?php echo $extra_js; ?>
     <?php endif; ?>

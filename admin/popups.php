@@ -157,7 +157,7 @@ include 'layout/sidebar.php';
 ?>
 
 <style>
-.pp-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:20px; margin-top:4px; }
+.pp-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(min(320px, 100%), 1fr)); gap:20px; margin-top:4px; }
 .pp-card { border:1px solid #e5e7eb; border-radius:14px; background:#fff; overflow:hidden; box-shadow:0 4px 16px rgba(0,0,0,.04); display:flex; flex-direction:column; transition:box-shadow .22s; }
 .pp-card:hover { box-shadow:0 8px 28px rgba(0,0,0,.09); }
 .pp-card-img { position:relative; aspect-ratio:16/7; background:#1a1a1a; overflow:hidden; }
