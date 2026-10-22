@@ -5691,21 +5691,6 @@ select:focus-visible {
     var(--dark);
 }
 
-.site-footer::before {
-  content: '';
-  position: absolute;
-  top: -90px;
-  right: -90px;
-  width: 260px;
-  height: 260px;
-  border-radius: 50%;
-  border: 1px solid rgba(232,93,142,.18);
-  box-shadow:
-    0 0 0 34px rgba(232,93,142,.03),
-    0 0 0 68px rgba(139,107,184,.02);
-  pointer-events: none;
-}
-
 .footer-social-icon:hover,
 .site-footer .footer-social-icon:hover {
   background: linear-gradient(135deg, var(--orange), var(--rose));

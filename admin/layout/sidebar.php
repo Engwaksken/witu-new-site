@@ -48,14 +48,15 @@ function adminNavActive(string $file): string { global $currentPage; return $cur
         </div>
         <?php endif; ?>
 
-        <?php if (hasPermission($conn, 'manage_users') || hasPermission($conn, 'manage_roles') || hasPermission($conn, 'manage_settings')): ?>
-        <div class="nav-dropdown <?=in_array($currentPage,['users.php','roles.php','permissions.php','settings.php','activity-logs.php'])?'open':''?>">
+        <?php if (hasPermission($conn, 'manage_users') || hasPermission($conn, 'manage_roles') || hasPermission($conn, 'manage_settings') || hasPermission($conn, 'manage_popups')): ?>
+        <div class="nav-dropdown <?=in_array($currentPage,['users.php','roles.php','permissions.php','settings.php','popups.php','activity-logs.php'])?'open':''?>">
             <a href="#" class="nav-item nav-dropdown-toggle"><span class="nav-icon"><i class="fas fa-gears"></i></span><span class="nav-text">Site Management</span><span class="dropdown-arrow"><i class="fas fa-chevron-down"></i></span></a>
             <div class="nav-dropdown-menu">
                 <?php if (hasPermission($conn, 'manage_users')): ?><a href="users.php" class="nav-dropdown-item <?=adminNavActive('users.php')?>"><span class="nav-icon"><i class="fas fa-users"></i></span><span class="nav-text">Users</span></a><?php endif; ?>
                 <?php if (hasPermission($conn, 'manage_roles')): ?><a href="roles.php" class="nav-dropdown-item <?=adminNavActive('roles.php')?>"><span class="nav-icon"><i class="fas fa-user-shield"></i></span><span class="nav-text">Roles</span></a><?php endif; ?>
                 <?php if (hasPermission($conn, 'manage_roles')): ?><a href="permissions.php" class="nav-dropdown-item <?=adminNavActive('permissions.php')?>"><span class="nav-icon"><i class="fas fa-shield-halved"></i></span><span class="nav-text">Permissions</span></a><?php endif; ?>
                 <?php if (hasPermission($conn, 'manage_settings')): ?><a href="settings.php" class="nav-dropdown-item <?=adminNavActive('settings.php')?>"><span class="nav-icon"><i class="fas fa-sliders"></i></span><span class="nav-text">Settings</span></a><?php endif; ?>
+                <?php if (hasPermission($conn, 'manage_popups') || hasPermission($conn, 'manage_settings')): ?><a href="popups.php" class="nav-dropdown-item <?=adminNavActive('popups.php')?>"><span class="nav-icon"><i class="fas fa-window-restore"></i></span><span class="nav-text">Site Popups</span></a><?php endif; ?>
                 <a href="activity-logs.php" class="nav-dropdown-item <?=adminNavActive('activity-logs.php')?>"><span class="nav-icon"><i class="fas fa-clock-rotate-left"></i></span><span class="nav-text">Activity Logs</span></a>
             </div>
         </div>

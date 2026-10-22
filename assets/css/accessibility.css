@@ -11,12 +11,13 @@
 .a11y-launcher {
   position: fixed; left: 16px; bottom: 16px; z-index: 1100;
   display: inline-flex; align-items: center; justify-content: center;
-  min-height: 44px; padding: 10px 15px;
-  border: 1px solid #fff; border-radius: 24px;
+  width: 52px; height: 52px; padding: 0;
+  border: 2px solid #fff; border-radius: 50%;
   background: var(--a11y-brand); color: #fff;
-  font: 600 13px/1.4 Arial, sans-serif; letter-spacing: .01em;
-  box-shadow: 0 3px 12px #66320126; cursor: pointer;
+  font-size: 28px; line-height: 1;
+  box-shadow: 0 3px 12px #66320140; cursor: pointer;
 }
+.a11y-launcher i { pointer-events: none; }
 .a11y-launcher:hover { background: var(--a11y-action); }
 .a11y-panel {
   box-sizing: border-box; position: fixed; inset: auto auto 70px 16px;

@@ -1,9 +1,56 @@
 
-// Toggle sidebar
+// Sidebar: collapses in place on desktop (remembered), slides over the page on
+// tablets and phones (never remembered, so it can't stay hidden by accident).
+const SIDEBAR_BREAKPOINT = 1024;
+
+function isMobileSidebar() {
+    return window.innerWidth <= SIDEBAR_BREAKPOINT;
+}
+
+function setMobileSidebar(open) {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    const toggle = document.querySelector('.sidebar-toggle');
+    if (!sidebar) return;
+    sidebar.classList.toggle('show', open);
+    if (overlay) overlay.hidden = !open;
+    document.body.classList.toggle('sidebar-open', open);
+    if (toggle) toggle.setAttribute('aria-expanded', String(open));
+}
+
 function toggleSidebar() {
     const sidebar = document.getElementById('sidebar');
-    sidebar.classList.toggle('show');
+    if (!sidebar) return;
+    if (isMobileSidebar()) {
+        setMobileSidebar(!sidebar.classList.contains('show'));
+        return;
+    }
+    const collapsed = document.documentElement.classList.toggle('sidebar-collapsed');
+    try { localStorage.setItem('adminSidebarCollapsed', String(collapsed)); } catch (e) {}
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const toggle = document.querySelector('.sidebar-toggle');
+    const overlay = document.getElementById('sidebarOverlay');
+    const sidebar = document.getElementById('sidebar');
+
+    if (toggle) toggle.addEventListener('click', toggleSidebar);
+    if (overlay) overlay.addEventListener('click', function() { setMobileSidebar(false); });
+
+    // Following a link from the off-canvas menu closes it.
+    if (sidebar) sidebar.addEventListener('click', function(e) {
+        if (isMobileSidebar() && e.target.closest('a[href]:not(.nav-dropdown-toggle)')) setMobileSidebar(false);
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && sidebar && sidebar.classList.contains('show')) setMobileSidebar(false);
+    });
+
+    // Reset the off-canvas state when the window grows back to desktop width.
+    window.addEventListener('resize', function() {
+        if (!isMobileSidebar() && sidebar && sidebar.classList.contains('show')) setMobileSidebar(false);
+    });
+});
 
 // Navigation Dropdown Toggle
 document.addEventListener('DOMContentLoaded', function() {
@@ -424,16 +471,6 @@ function confirmAction(message, callback) {
 document.addEventListener('DOMContentLoaded', function() {
     initTooltips();
     
-    // Close mobile sidebar when clicking outside
-    document.addEventListener('click', function(event) {
-        const sidebar = document.getElementById('sidebar');
-        const toggle = document.querySelector('.sidebar-toggle');
-        
-        if (sidebar && !sidebar.contains(event.target) && event.target !== toggle && !toggle?.contains(event.target)) {
-            sidebar.classList.remove('show');
-        }
-    });
-    
     // Add smooth scroll behavior
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
@@ -468,6 +505,7 @@ document.addEventListener('DOMContentLoaded', function() {
         form.addEventListener('submit', function() {
             const submitBtn = this.querySelector('[type="submit"]');
             if (submitBtn) {
+                submitBtn.dataset.originalText = submitBtn.dataset.originalText || submitBtn.innerHTML;
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
                 
@@ -513,24 +551,6 @@ const Storage = {
         }
     }
 };
-
-// Remember sidebar state
-document.addEventListener('DOMContentLoaded', function() {
-    const sidebar = document.getElementById('sidebar');
-    const sidebarState = Storage.get('sidebarCollapsed', false);
-    
-    if (sidebarState && window.innerWidth > 768) {
-        sidebar.classList.add('collapsed');
-    }
-    
-    const sidebarToggle = document.querySelector('.sidebar-toggle');
-    if (sidebarToggle) {
-        sidebarToggle.addEventListener('click', function() {
-            const isCollapsed = sidebar.classList.contains('collapsed');
-            Storage.set('sidebarCollapsed', !isCollapsed);
-        });
-    }
-});
 
 // Export functions for use in other scripts
 window.AdminJS = {

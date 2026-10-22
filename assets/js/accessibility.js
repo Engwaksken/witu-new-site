@@ -7,7 +7,8 @@
   settings.size = [100,110,120,130,140,150].includes(settings.size) ? settings.size : 100;
   settings.contrast = ['default','dark','light'].includes(settings.contrast) ? settings.contrast : 'default';
   const launcher = document.createElement('button');
-  launcher.type = 'button'; launcher.className = 'a11y-launcher'; launcher.textContent = 'Accessibility';
+  launcher.type = 'button'; launcher.className = 'a11y-launcher'; launcher.title = 'Accessibility';
+  launcher.setAttribute('aria-label', 'Accessibility settings'); launcher.innerHTML = '<i class="fa-solid fa-universal-access" aria-hidden="true"></i>';
   launcher.setAttribute('aria-haspopup', 'dialog'); launcher.setAttribute('aria-controls', 'a11y-panel');
   const panel = document.createElement('dialog'); panel.id = 'a11y-panel'; panel.className = 'a11y-panel';
   panel.setAttribute('aria-labelledby', 'a11y-title');

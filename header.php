@@ -1,7 +1,13 @@
 <?php
 
-if (session_status() === PHP_SESSION_NONE) {
+// Only resume an existing session: a new one for every anonymous visitor adds a
+// cookie and no-store headers that keep pages out of the back/forward cache.
+if (session_status() === PHP_SESSION_NONE && isset($_COOKIE[session_name()])) {
     session_start();
+}
+
+if (!headers_sent() && session_status() !== PHP_SESSION_ACTIVE) {
+    header('Cache-Control: private, no-cache');
 }
 
 if (!isset($conn)) {
@@ -76,8 +82,10 @@ function isActiveContains(string $needle, string $path): string {
     <link rel="icon" type="image/x-icon" href="<?= htmlspecialchars($site_favicon) ?>">
   <?php endif; ?>
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="assets/css/site.css">
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
+  <link rel="stylesheet" href="<?= htmlspecialchars(versionedAsset('assets/css/site.css')) ?>">
 
   <style>
     :root {
@@ -89,9 +97,9 @@ function isActiveContains(string $needle, string $path): string {
   </style>
 
   <?= $additional_head; ?>
-  <link rel="stylesheet" href="assets/css/frontend-refinements.css">
-  <link rel="stylesheet" href="assets/css/accessibility.css">
-  <link rel="stylesheet" href="assets/css/responsive.css">
+  <link rel="stylesheet" href="<?= htmlspecialchars(versionedAsset('assets/css/frontend-refinements.css')) ?>">
+  <link rel="stylesheet" href="<?= htmlspecialchars(versionedAsset('assets/css/accessibility.css')) ?>">
+  <link rel="stylesheet" href="<?= htmlspecialchars(versionedAsset('assets/css/responsive.css')) ?>">
 </head>
 
 <body class="<?= htmlspecialchars($body_class) ?>">
@@ -105,7 +113,8 @@ function isActiveContains(string $needle, string $path): string {
 
       <a href="index.php" class="logo" aria-label="<?= htmlspecialchars($site_name ?: 'WITU', ENT_QUOTES) ?> home">
         <?php if (!empty($site_logo)): ?>
-          <img src="<?= htmlspecialchars($site_logo) ?>" alt="<?= htmlspecialchars($site_name) ?>">
+          <?php $logo_dims = imgDimensions($site_logo); ?>
+          <img src="<?= htmlspecialchars($site_logo) ?>" alt="<?= htmlspecialchars($site_name) ?>"<?php if ($logo_dims): ?> width="<?= $logo_dims[0] ?>" height="<?= $logo_dims[1] ?>"<?php endif; ?>>
         <?php endif; ?>
         <?php if (empty($site_logo)): ?><strong class="logo-name"><?= htmlspecialchars($site_name ?: 'WITU') ?></strong><?php endif; ?>
 

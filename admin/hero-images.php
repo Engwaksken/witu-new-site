@@ -154,7 +154,7 @@ include 'layout/sidebar.php';
 /* Grid of page cards  */
 .hi-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr));
     gap: 20px;
     margin-top: 4px;
 }

@@ -210,7 +210,7 @@ include 'layout/sidebar.php';
 <style>
 .permission-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
     gap: 12px;
 }
 
@@ -325,7 +325,7 @@ include 'layout/sidebar.php';
 
 .permission-checkboxes {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(250px, 100%), 1fr));
     gap: 10px;
     margin-top: 15px;
 }
@@ -597,7 +597,7 @@ include 'layout/sidebar.php';
 /* Permission Matrix Grid */
 .permission-matrix-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
     gap: 15px;
 }
 

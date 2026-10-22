@@ -154,8 +154,13 @@
     </div>
 </footer>
 
-<script src="assets/js/site.js"></script>
-<script src="assets/js/accessibility.js"></script>
+<?php
+require_once __DIR__ . '/core/popup.php';
+renderSitePopup($conn, $current_file ?? basename($_SERVER['PHP_SELF'] ?? ''));
+?>
+
+<script src="<?= htmlspecialchars(versionedAsset('assets/js/site.js')) ?>"></script>
+<script src="<?= htmlspecialchars(versionedAsset('assets/js/accessibility.js')) ?>"></script>
 
 <?php if (isset($additional_scripts)): ?>
     <?php echo $additional_scripts; ?>

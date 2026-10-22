@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../core/auth.php';
+require_once __DIR__ . '/../core/helpers.php';
 
 // Redirect if already logged in
 if (isLoggedIn()) {
@@ -8,6 +9,7 @@ if (isLoggedIn()) {
 }
 
 $error = '';
+$login_site_name = getSetting($conn, 'site_name', '') ?: SITE_NAME;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'] ?? '';
@@ -26,14 +28,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - <?php echo SITE_NAME; ?></title>
-    <link rel="stylesheet" href="../assets/css/admin.css">
+    <title>Login - <?php echo htmlspecialchars($login_site_name); ?></title>
+    <link rel="icon" href="../assets/img/favicon.png">
+    <link rel="stylesheet" href="../<?php echo htmlspecialchars(versionedAsset('assets/css/admin.css')); ?>">
 </head>
 <body class="login-page">
     <div class="login-container">
         <div class="login-box">
             <div class="login-header">
-                <h1><?php echo SITE_NAME; ?></h1>
+                <img class="login-logo" src="<?php echo htmlspecialchars(siteLogoUrl($conn, '../')); ?>"
+                     alt="<?php echo htmlspecialchars($login_site_name); ?>" onerror="this.remove()">
+                <h1><?php echo htmlspecialchars($login_site_name); ?></h1>
                 <p>Login into Your account</p>
             </div>
             
@@ -56,7 +61,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </form>
             
             <div class="login-footer">
-                <p>&copy; <?php echo date('Y'); ?> <?php echo SITE_NAME; ?>. All rights reserved.</p>
+                <p>&copy; <?php echo date('Y'); ?> <?php echo htmlspecialchars($login_site_name); ?>. All rights reserved.</p>
+            </div>
         </div>
     </div>
 </body>
