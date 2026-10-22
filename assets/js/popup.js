@@ -37,27 +37,39 @@
   var hero = document.querySelector(
     'main section[class*="hero"], main header[class*="hero"], .witu-hero'
   );
+  var header = document.querySelector('.site-header');
   var GAP = 16;
 
-  // Centre over the hero in page coordinates, so it scrolls away with the hero.
+  // Fixed to the screen, so it stays in view while the page scrolls. It opens
+  // centred over the visible part of the hero, or the screen when the hero has
+  // scrolled away. Only re-placed on resize, never on scroll.
   function place() {
     if (popup.hidden) return;
-    if (!hero) { popup.classList.add('site-popup--no-hero'); return; }
 
-    var rect = hero.getBoundingClientRect();
-    var top  = rect.top + window.pageYOffset;
-    var left = rect.left + window.pageXOffset;
+    var vw = document.documentElement.clientWidth;
+    var vh = window.innerHeight;
+    var hb = header ? header.getBoundingClientRect().bottom : 0;
+    var topBound = Math.max(hb, 0) + GAP;
 
-    // Fit inside the hero; short heroes still get a usable card that scrolls inside.
-    popup.style.setProperty('--site-popup-max-h', Math.max(rect.height - GAP * 2, 320) + 'px');
+    popup.style.setProperty('--site-popup-max-h', Math.max(vh - topBound - GAP, 240) + 'px');
 
     var w = popup.offsetWidth, h = popup.offsetHeight;
-    var x = left + (rect.width - w) / 2;
-    var y = top + Math.max((rect.height - h) / 2, GAP);
-    var maxX = document.documentElement.clientWidth - w - GAP;
+    var areaTop = topBound, areaBottom = vh - GAP, areaLeft = 0, areaWidth = vw;
 
-    popup.style.left = Math.max(GAP, Math.min(x, maxX)) + 'px';
-    popup.style.top  = y + 'px';
+    if (hero) {
+      var r = hero.getBoundingClientRect();
+      var visTop = Math.max(r.top, topBound), visBottom = Math.min(r.bottom, vh - GAP);
+      if (visBottom - visTop >= h) {
+        areaTop = visTop; areaBottom = visBottom;
+        areaLeft = r.left; areaWidth = r.width;
+      }
+    }
+
+    var x = areaLeft + (areaWidth - w) / 2;
+    var y = areaTop + Math.max((areaBottom - areaTop - h) / 2, 0);
+
+    popup.style.left = Math.max(GAP, Math.min(x, vw - w - GAP)) + 'px';
+    popup.style.top  = Math.max(topBound, Math.min(y, vh - h - GAP)) + 'px';
   }
 
   function open() {
@@ -65,7 +77,6 @@
     place();
     markSeen();
     window.addEventListener('resize', place);
-    if (hero && window.ResizeObserver) new ResizeObserver(place).observe(hero);
     // The image changes the card's height once it loads.
     var img = popup.querySelector('img');
     if (img && !img.complete) img.addEventListener('load', place);

@@ -1,26 +1,19 @@
-/* Admin-managed site popup (core/popup.php). popup.js centres it over the
-   page's hero section; it scrolls away with the hero and never locks the page.
+/* Admin-managed site popup (core/popup.php). popup.js opens it centred over
+   the hero section; it is fixed to the screen so it stays in view while the
+   page scrolls, and never locks scrolling.
    z-index stays under the sticky header (900) and mobile menu overlay (800). */
 .site-popup {
-  position: absolute;
-  top: 0;
-  left: 0;
+  position: fixed;
+  top: 50%;
+  left: 50%;
   z-index: 790;
   width: min(480px, calc(100vw - 32px));
 }
 .site-popup[hidden] { display: none; }
 
-/* No hero on the page: centre in the viewport instead. */
-.site-popup--no-hero {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
 .site-popup__dialog {
   position: relative;
-  max-height: var(--site-popup-max-h, calc(100dvh - 120px));
+  max-height: var(--site-popup-max-h, calc(100vh - 120px));
   overflow-y: auto;
   overscroll-behavior: contain;
   background: var(--white, #fff);
