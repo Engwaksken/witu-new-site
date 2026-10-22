@@ -198,7 +198,7 @@ include 'layout/sidebar.php';
 <?php endif; ?>
 
 <p style="color:#6b7280;font-size:14px;margin-bottom:20px;">
-    Popups appear as a card in the bottom corner of the public website, without blocking scrolling. When several popups are live on the same page,
+    Popups appear centred over the hero banner at the top of each page, without blocking scrolling. When several popups are live on the same page,
     visitors see the one with the highest priority.
 </p>
 
@@ -304,7 +304,7 @@ include 'layout/sidebar.php';
                     <label><i class="fas fa-image" style="color:#f86505;"></i> Image (optional)</label>
                     <input type="file" name="image" id="ppImage" accept="image/jpeg,image/png,image/gif,image/webp"
                            onchange="previewPopupImage(this)">
-                    <small>Shown across the top of the popup card. Landscape images work best.</small>
+                    <small>Shown as a 16:9 banner across the top of the popup. Upload at least 960 x 540 px (JPG or WebP, under 300 KB).</small>
                 </div>
                 <div id="ppPreviewWrap" style="display:none;margin-bottom:16px;">
                     <img id="ppPreviewImg" src="" alt=""

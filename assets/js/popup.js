@@ -1,5 +1,5 @@
-/* Shows the admin-managed site popup rendered by core/popup.php. It is a
-   non-blocking corner card: no scroll lock and no focus trap. */
+/* Shows the admin-managed site popup rendered by core/popup.php, centred over
+   the hero section. It doesn't block the page: no scroll lock or focus trap. */
 (function () {
   var popup = document.getElementById('sitePopup');
   if (!popup) return;
@@ -33,9 +33,42 @@
 
   if (alreadySeen()) return;
 
+  // Every page names its hero differently (witu-hero, about-hero, pg-hero...).
+  var hero = document.querySelector(
+    'main section[class*="hero"], main header[class*="hero"], .witu-hero'
+  );
+  var GAP = 16;
+
+  // Centre over the hero in page coordinates, so it scrolls away with the hero.
+  function place() {
+    if (popup.hidden) return;
+    if (!hero) { popup.classList.add('site-popup--no-hero'); return; }
+
+    var rect = hero.getBoundingClientRect();
+    var top  = rect.top + window.pageYOffset;
+    var left = rect.left + window.pageXOffset;
+
+    // Fit inside the hero; short heroes still get a usable card that scrolls inside.
+    popup.style.setProperty('--site-popup-max-h', Math.max(rect.height - GAP * 2, 320) + 'px');
+
+    var w = popup.offsetWidth, h = popup.offsetHeight;
+    var x = left + (rect.width - w) / 2;
+    var y = top + Math.max((rect.height - h) / 2, GAP);
+    var maxX = document.documentElement.clientWidth - w - GAP;
+
+    popup.style.left = Math.max(GAP, Math.min(x, maxX)) + 'px';
+    popup.style.top  = y + 'px';
+  }
+
   function open() {
     popup.hidden = false;
+    place();
     markSeen();
+    window.addEventListener('resize', place);
+    if (hero && window.ResizeObserver) new ResizeObserver(place).observe(hero);
+    // The image changes the card's height once it loads.
+    var img = popup.querySelector('img');
+    if (img && !img.complete) img.addEventListener('load', place);
   }
 
   function close() {
