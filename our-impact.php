@@ -63,7 +63,7 @@ $st = $conn->prepare("
     FROM news_blog
     WHERE status = 'published' AND category = ?
     ORDER BY published_at DESC, created_at DESC
-    LIMIT 3
+    LIMIT 4
 ");
 
 if ($st) {
@@ -75,6 +75,10 @@ if ($st) {
     }
     $st->close();
 }
+
+// One extra row is fetched only to learn whether more than three exist.
+$hasMoreStories = count($stories) > 3;
+$stories = array_slice($stories, 0, 3);
 
 $storiesLink = 'blog.php?category=' . urlencode($storiesCategory);
 
@@ -743,11 +747,13 @@ include 'header.php';
             <?php endforeach; ?>
         </div>
 
-        <div class="imp-stories-more">
-            <a class="imp-stories-btn" href="<?php echo h($storiesLink); ?>">
-                See More Stories <i class="fas fa-arrow-right" aria-hidden="true"></i>
-            </a>
-        </div>
+        <?php if ($hasMoreStories): ?>
+            <div class="imp-stories-more">
+                <a class="imp-stories-btn" href="<?php echo h($storiesLink); ?>">
+                    See More Stories <i class="fas fa-arrow-right" aria-hidden="true"></i>
+                </a>
+            </div>
+        <?php endif; ?>
 
     </div>
 </section>
