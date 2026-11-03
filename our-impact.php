@@ -13,7 +13,7 @@ $page = [
     'hero_title'        => 'Our Impact',
     'hero_subtitle'     => '',
     'intro_title'       => 'Overall Impact',
-    'intro_text'        => "Around here, we're really big on numbers… our results speak for themselves.\n\nOur programs and services are dedicated to empowering young girls and women by enhancing their learning outcomes, enabling STEM excellence, and facilitating access to global job opportunities.\n\nThrough our initiatives, participants gain confidence, attain financial independence, and enjoy an improved quality of life.",
+    'intro_text'        => "Around here, we're really big on numbers... our results speak for themselves.\n\nOur programs and services are dedicated to empowering young girls and women by enhancing their learning outcomes, enabling STEM excellence, and facilitating access to global job opportunities.\n\nThrough our initiatives, participants gain confidence, attain financial independence, and enjoy an improved quality of life.",
     'annual_cta_title'  => 'Want to see the official impact data?',
     'annual_cta_text'   => 'Our annual reports speak to the success of the WITU model and the lives our Programmes have changed.',
     'annual_cta_button' => 'Read the Annual Reports',
@@ -54,6 +54,29 @@ if ($res) {
         }
     }
 }
+
+$storiesCategory = 'Impact Stories';
+$stories = [];
+
+$st = $conn->prepare("
+    SELECT title, slug, excerpt, content, featured_image, published_at, created_at
+    FROM news_blog
+    WHERE status = 'published' AND category = ?
+    ORDER BY published_at DESC, created_at DESC
+    LIMIT 3
+");
+
+if ($st) {
+    $st->bind_param('s', $storiesCategory);
+    $st->execute();
+    $res = $st->get_result();
+    while ($r = $res->fetch_assoc()) {
+        $stories[] = $r;
+    }
+    $st->close();
+}
+
+$storiesLink = 'blog.php?category=' . urlencode($storiesCategory);
 
 $page_title = 'Our Impact';
 include 'header.php';
@@ -213,6 +236,11 @@ include 'header.php';
     margin-bottom:32px;
 }
 
+.imp-block-head .imp-section-kicker {
+    display:flex;
+    margin-bottom:10px;
+}
+
 .imp-block-head h2 {
     font-size:clamp(1.5rem, 3vw, 2.2rem);
     font-weight:900;
@@ -235,9 +263,9 @@ include 'header.php';
 .imp-card {
     background:#fff;
     border:1px solid var(--border);
-    border-radius:18px;
-    padding:32px 20px 28px;
-    text-align:center;
+    border-radius:14px;
+    padding:24px 22px 22px;
+    text-align:left;
     box-shadow:0 4px 18px rgba(0,0,0,.05);
     position:relative;
     overflow:hidden;
@@ -274,26 +302,33 @@ include 'header.php';
     transform:scaleX(1);
 }
 
+.imp-card-top {
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-bottom:12px;
+}
+
 .imp-card-icon {
-    width:70px;
-    height:70px;
-    margin:0 auto 18px;
-    border-radius:50%;
+    flex:0 0 48px;
+    width:48px;
+    height:48px;
+    border-radius:12px;
     background:rgba(248,101,5,.09);
     display:flex;
     align-items:center;
     justify-content:center;
-    transition:.3s ease;
+    transition:background .3s ease;
 }
 
 .imp-card-icon i {
-    font-size:30px;
+    font-size:20px;
     color:var(--orange);
+    transition:color .3s ease;
 }
 
 .imp-card:hover .imp-card-icon {
     background:var(--orange);
-    transform:translateY(-3px);
 }
 
 .imp-card:hover .imp-card-icon i {
@@ -301,17 +336,157 @@ include 'header.php';
 }
 
 .imp-card-value {
-    font-size:clamp(2rem, 3.5vw, 2.8rem);
-    font-weight:900;
-    line-height:1;
-    margin-bottom:10px;
+    font-size:2rem;
+    font-weight:800;
+    line-height:1.1;
+    letter-spacing:-.01em;
     color:var(--dark);
+    font-variant-numeric:tabular-nums;
+    min-width:0;
+    overflow-wrap:anywhere;
 }
 
 .imp-card-label {
-    font-size:.9rem;
-    line-height:1.6;
+    font-size:.92rem;
+    line-height:1.55;
     color:var(--mid);
+    margin:0;
+}
+
+/* Impact stories */
+.imp-stories {
+    padding:80px 0;
+    background:#fff;
+}
+
+.imp-stories-grid {
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:24px;
+}
+
+.imp-story {
+    display:flex;
+    flex-direction:column;
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:14px;
+    overflow:hidden;
+    box-shadow:0 4px 18px rgba(0,0,0,.05);
+    transition:transform .25s var(--ease), box-shadow .25s var(--ease);
+}
+
+.imp-story:hover {
+    transform:translateY(-4px);
+    box-shadow:0 18px 40px rgba(0,0,0,.1);
+}
+
+.imp-story-thumb {
+    display:block;
+    aspect-ratio:16 / 10;
+    background:var(--cream);
+    overflow:hidden;
+}
+
+.imp-story-thumb img {
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+    transition:transform .5s var(--ease);
+}
+
+.imp-story:hover .imp-story-thumb img {
+    transform:scale(1.04);
+}
+
+.imp-story-placeholder {
+    width:100%;
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:rgba(248,101,5,.45);
+    font-size:32px;
+}
+
+.imp-story-body {
+    display:flex;
+    flex-direction:column;
+    flex:1;
+    padding:22px 22px 24px;
+}
+
+.imp-story-date {
+    font-size:.78rem;
+    color:var(--muted);
+    margin-bottom:8px;
+}
+
+.imp-story-title {
+    font-size:1.12rem;
+    font-weight:800;
+    line-height:1.35;
+    margin:0 0 10px;
+}
+
+.imp-story-title a {
+    color:var(--dark);
+    text-decoration:none;
+}
+
+.imp-story-title a:hover {
+    color:var(--orange);
+}
+
+.imp-story-excerpt {
+    font-size:.92rem;
+    line-height:1.65;
+    color:var(--mid);
+    margin:0 0 18px;
+}
+
+.imp-story-link {
+    margin-top:auto;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-size:.85rem;
+    font-weight:700;
+    color:var(--orange);
+    text-decoration:none;
+}
+
+.imp-story-link:hover {
+    text-decoration:underline;
+}
+
+.imp-stories-more {
+    text-align:center;
+    margin-top:40px;
+}
+
+.imp-stories-btn {
+    display:inline-flex;
+    align-items:center;
+    gap:9px;
+    background:var(--orange);
+    color:#fff;
+    font-size:.9rem;
+    font-weight:700;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    text-decoration:none;
+    padding:14px 34px;
+    border-radius:4px;
+    border:1.5px solid var(--orange);
+    transition:.22s ease;
+}
+
+.imp-stories-btn:hover {
+    background:transparent;
+    color:var(--orange);
+    transform:translateY(-2px);
 }
 
 .imp-divider {
@@ -429,7 +604,8 @@ include 'header.php';
 }
 
 @media (max-width:992px) {
-    .imp-grid {
+    .imp-grid,
+    .imp-stories-grid {
         grid-template-columns:repeat(2, 1fr);
     }
 }
@@ -441,11 +617,17 @@ include 'header.php';
 }
 
 @media (max-width:560px) {
-    .imp-grid {
+    .imp-grid,
+    .imp-stories-grid {
         grid-template-columns:1fr;
     }
 
+    .imp-card-value {
+        font-size:1.75rem;
+    }
+
     .imp-intro,
+    .imp-stories,
     .imp-stats,
     .imp-cta {
         padding:60px 0;
@@ -509,6 +691,68 @@ include 'header.php';
     </div>
 </section>
 
+<?php if (!empty($stories)): ?>
+<section class="imp-stories">
+    <div class="imp-wrap">
+
+        <div class="imp-block-head">
+            <span class="imp-section-kicker">Impact Stories</span>
+            <h2>Stories of Change</h2>
+            <p>Behind every number is a woman whose life our programmes have changed.</p>
+        </div>
+
+        <div class="imp-stories-grid">
+            <?php foreach ($stories as $story):
+                $storyUrl = 'blog-post.php?slug=' . urlencode($story['slug']);
+                $excerpt  = !empty($story['excerpt'])
+                    ? $story['excerpt']
+                    : strip_tags($story['content'] ?? '');
+            ?>
+                <article class="imp-story">
+                    <a class="imp-story-thumb" href="<?php echo h($storyUrl); ?>" tabindex="-1" aria-hidden="true">
+                        <?php if (!empty($story['featured_image'])): ?>
+                            <?php echo responsiveImg(
+                                'uploads/blog/' . $story['featured_image'],
+                                (string)$story['title'],
+                                [],
+                                IMG_PHOTO_WIDTHS,
+                                '(max-width: 560px) 92vw, (max-width: 992px) 46vw, 380px'
+                            ); ?>
+                        <?php else: ?>
+                            <span class="imp-story-placeholder"><i class="fas fa-book-open"></i></span>
+                        <?php endif; ?>
+                    </a>
+
+                    <div class="imp-story-body">
+                        <div class="imp-story-date">
+                            <?php echo h(formatDate($story['published_at'] ?: $story['created_at'])); ?>
+                        </div>
+
+                        <h3 class="imp-story-title">
+                            <a href="<?php echo h($storyUrl); ?>"><?php echo h($story['title']); ?></a>
+                        </h3>
+
+                        <p class="imp-story-excerpt"><?php echo h(truncate(trim($excerpt), 130)); ?></p>
+
+                        <a class="imp-story-link" href="<?php echo h($storyUrl); ?>"
+                           aria-label="Read story: <?php echo h($story['title']); ?>">
+                            Read Story <i class="fas fa-arrow-right" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </article>
+            <?php endforeach; ?>
+        </div>
+
+        <div class="imp-stories-more">
+            <a class="imp-stories-btn" href="<?php echo h($storiesLink); ?>">
+                See More Stories <i class="fas fa-arrow-right" aria-hidden="true"></i>
+            </a>
+        </div>
+
+    </div>
+</section>
+<?php endif; ?>
+
 <section class="imp-stats">
     <div class="imp-wrap">
 
@@ -536,14 +780,16 @@ include 'header.php';
                     $delay = ($idx % 4) * 80;
                 ?>
                     <div class="imp-card" style="background:<?php echo $bg; ?>;transition-delay:<?php echo $delay; ?>ms">
-                        <div class="imp-card-icon">
-                            <i class="<?php echo h($icon); ?>"></i>
-                        </div>
+                        <div class="imp-card-top">
+                            <div class="imp-card-icon" aria-hidden="true">
+                                <i class="<?php echo h($icon); ?>"></i>
+                            </div>
 
-                        <div class="imp-card-value js-count"
-                             data-value="<?php echo h($value); ?>"
-                             style="color:<?php echo $valC; ?>;">
-                            <?php echo h($value); ?>
+                            <div class="imp-card-value js-count"
+                                 data-value="<?php echo h($value); ?>"
+                                 style="color:<?php echo $valC; ?>;">
+                                <?php echo h($value); ?>
+                            </div>
                         </div>
 
                         <p class="imp-card-label" style="color:<?php echo $labC; ?>;">
@@ -581,14 +827,16 @@ include 'header.php';
                     $delay = ($idx % 4) * 80;
                 ?>
                     <div class="imp-card" style="background:<?php echo $bg; ?>;transition-delay:<?php echo $delay; ?>ms">
-                        <div class="imp-card-icon">
-                            <i class="<?php echo h($icon); ?>"></i>
-                        </div>
+                        <div class="imp-card-top">
+                            <div class="imp-card-icon" aria-hidden="true">
+                                <i class="<?php echo h($icon); ?>"></i>
+                            </div>
 
-                        <div class="imp-card-value js-count"
-                             data-value="<?php echo h($value); ?>"
-                             style="color:<?php echo $valC; ?>;">
-                            <?php echo h($value); ?>
+                            <div class="imp-card-value js-count"
+                                 data-value="<?php echo h($value); ?>"
+                                 style="color:<?php echo $valC; ?>;">
+                                <?php echo h($value); ?>
+                            </div>
                         </div>
 
                         <p class="imp-card-label" style="color:<?php echo $labC; ?>;">
